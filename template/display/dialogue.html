@@ -1,0 +1,437 @@
+<!doctype html>
+<html>
+<title>和美智能机器人</title>
+<head>
+    <meta charset="utf-8"/>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="../../static/jquery-3.2.1.min.js"></script>
+    <script src="../../static/underscore-min.js"></script>
+    <script src="../../static/chatbox.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <style>
+
+        div.action-item > p {
+            border: 1px solid #F2F2F2;
+            color: #585858;
+            padding: 0.5em;
+            border-radius: 4px;
+        }
+
+        div.say-item > img {
+            width: 36px;
+        }
+
+        div.say-item.robot > img {
+            float: left;
+        }
+
+        div.say-item.human > img {
+            float: right;
+        }
+
+        div.say-item > p {
+            border: 1px solid #c0c0c0;
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 480px;
+        }
+
+        div.say-item.robot > p {
+            float: left;
+            margin-left: 0.5em;
+            background-color: #fff;
+        }
+
+        div.say-item.human > p {
+            float: right;
+            margin-right: 0.5em;
+            background-color: #BEF781;
+        }
+
+        div.say-item > p > i {
+            color: #A4A4A4
+        }
+
+        div.say-item > p.right {
+            background-color: #BEF781;
+            border: 1px solid #01DF3A;
+
+        }
+
+        div.say-item > p.left {
+            background-color: #F2F5A9;
+            border: 1px solid #F7D358;
+
+        }
+
+        .panel-chatbot .body {
+            min-height: 400px;
+            max-height: 700px;
+            overflow-y: auto;
+            background-color: #F6F6F6;
+            padding: 0.5em;
+        }
+
+        .panel-chatbot .footer {
+            position: relative;
+            padding: 0.5em;
+        }
+
+        .panel-chatbot .footer > .form-group {
+            margin-bottom: 0;
+        }
+
+        ul.auto_tips {
+            bottom: 100%;
+            top: auto;
+            left: 2%;
+            display: none;
+            width: 96%;
+
+        }
+
+        ul.auto_tips > li em {
+            color: red;
+        }
+
+        div.main {
+            display: table;
+            width: 100%;
+            border: 1px solid #024C73;
+            border-top: none;
+            background-color: #F6F6F6;
+            border-radius: 0px 0px 4px 4px;
+        }
+
+        div.main > .cell {
+            display: table-cell;
+        }
+
+        div.main > .cell.right {
+            width: 280px;
+            border-left: 1px solid #ccc;
+            vertical-align: top;
+            padding: 0.2em 0.4em;
+
+        }
+
+        div.tab-content {
+            background-color: #FFF;
+            min-height: 300px;
+        }
+
+        div.title-chatbot {
+            background-color: #03689E;
+            padding: .5em;
+            color: #FFF;
+            border: 1px solid #024C73;
+            border-bottom: none;
+            margin-top: 1em;
+
+            border-radius: 4px 4px 0px 0px;
+        }
+
+        a.question {
+            background-color: #C6DDFC;
+            border-radius: 8px;
+
+        }
+        .panel-title {
+            font-size: 14px;
+        }
+
+        #op_tip_div{
+            position: fixed;
+            z-index: 9999;
+            top:0;
+            left:20%;
+            width: 60%;
+        }
+
+        #op_tip_div .content{text-align: center;}
+    </style>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title-chatbot clearfix">
+        <h4 class="pull-left">聊天机器人 | AI Workway Service Chatbot</h4>
+        <div class="dropdown pull-right">
+          <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" style="color:#FFF;font-size:18px;padding:4px 4px;">
+            <i class="glyphicon glyphicon-align-justify"></i>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="javascript:" data-toggle="modal" data-target="#myModalA">添加QA</a></li>
+          </ul>
+        </div>
+
+    </div>
+
+    <div class="main">
+
+        <div class="left cell panel-chatbot">
+
+
+            <div class="body">
+
+            </div>
+
+            <div class="footer">
+                <div class="form-group form-group-lg">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="utterance" placeholder="聊天输入..."/>
+                        <div class="input-group-addon">
+                            <a href="javascript:" name="send-btn">发送 [Enter]</a>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="dropdown-menu auto_tips"></ul>
+            </div>
+
+
+        </div>
+
+        <div class="right cell">
+
+            <div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" role="tab"
+                                                              data-toggle="tab">问题分类</a></li>
+                    <li role="presentation"><a href="#tab2" aria-controls="profile" role="tab"
+                                               data-toggle="tab">常见问题</a></li>
+
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+
+                    <div role="tabpanel" class="tab-pane active qa_cls" id="tab1">
+
+                        <ul class="list-group">
+                            <a href="javascript:" class="list-group-item list-group-item-success">信用卡短信还款</a>
+                            <a href="javascript:" class="list-group-item list-group-item-info active">企业网银代发到账</a>
+                            <a href="javascript:" class="list-group-item list-group-item-success">企业网银如何进行单笔代发</a>
+                            <a href="javascript:" class="list-group-item list-group-item-info">信用卡境外美元还款路径</a>
+                            <a href="javascript:" class="list-group-item list-group-item-warning">企业网银如何查询代发明细</a>
+                            <a href="javascript:" class="list-group-item list-group-item-info">手机银行查询账户明细</a>
+                            <a href="javascript:" class="list-group-item list-group-item-warning">查询公积金余额</a>
+                            <a href="javascript:" class="list-group-item list-group-item-danger">没解决问题？呼叫人工服务</a>
+                        </ul>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="tab2">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                           aria-expanded="false" aria-controls="collapseOne">
+                                            借记卡开卡基本业务规定
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                                     aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        银行借记卡产品类型包括普卡、金卡、白金卡和钻石卡。 存款人申请开立银行借记卡时，应提供符合实名制要求的身份证明文件。</div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse"
+                                           data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
+                                           aria-controls="collapseTwo">
+                                            附属卡主要业务办理
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
+                                     aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        附属卡仅限于在中国境内使用，在主卡账户可用余额内，附属卡可在授予的交易限额范围内办理人民币业务。其主要功能包括但不限于： 柜面：存现、取现、转账、代缴费、签约（仅短信、ATM转账、代缴费）、密码管理、挂失/解挂、补/换卡、明细查询等； 自助设备（含自助柜员机）：存现、取现、转账、修改密码、余额查询等。
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse"
+                                           data-parent="#accordion" href="#collapseThree" aria-expanded="false"
+                                           aria-controls="collapseThree">
+                                            上行快线的使用渠道的手机APP版本是什么？
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                                     aria-labelledby="headingThree">
+                                    <div class="panel-body">
+                                     IOS 8及以上；Android 32及以上
+                                    </div>
+                                </div>
+                            </div>
+                                          <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingFour">
+                                    <h4 class="panel-title">
+                                        <a class="collapsed" role="button" data-toggle="collapse"
+                                           data-parent="#accordion" href="#collapseFour" aria-expanded="false"
+                                           aria-controls="collapseTwo">
+                                            个人信用卡启用风险提示？
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
+                                     aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        非身份证件类型的客户在电话银行中无法自助操作启用，须人工启用。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModalA" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="input000" class="col-sm-2 control-label">主题</label>
+                        <div class="col-sm-10">
+                          <select class="form-control" name="theme">
+                              <option value="">请选择一个主题</option>
+                              <option value="信用卡短信还款">信用卡短信还款</option>
+                              <option value="门机安装">企业网银代发到账</option>
+                              <option value="郦江车位">企业网银如何进行单笔代发</option>
+                              <option value="商业业主群诉">信用卡境外美元还款路径</option>
+                              <option value="洗衣上线">企业网银如何查询代发明细</option>
+                              <option value="游泳池相关问题说辞">手机银行查询账户明细</option>
+                              <option value="正面教育统一说辞">查询公积金余额</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="input001" class="col-sm-2 control-label">问题</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="input001" name="question" placeholder="">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="input002" class="col-sm-2 control-label">答案</label>
+                        <div class="col-sm-10">
+                          <textarea id="input002" name="answer" rows="2" class="form-control"></textarea>
+                        </div>
+                      </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-submit">提 交</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div id="op_tip_div">
+
+</div>
+
+
+<div id="templates">
+
+<script type="text/template" name="say_item">
+        <div class="say-item clearfix <%=who=='Me' ? 'human' : 'robot' %>">
+<% if(who=='Me'){ %>
+    <img src="/static/images/touxiang1.png" alt="human" class="toux img-rounded"/>
+    <% } else{ %>
+    <img src="/static/images/cstm.png" alt="robot" class="toux img-rounded"/>
+    <% } %>
+<p class=""><i><%=who%>: </i><%=text%></p>
+</div>
+</script>
+
+    <script type="text/template" name="action_item">
+        <div class="action-item clearfix">
+            <p><i>Action: </i><%=action%><%=slots != '' ? ' <-- ' + slots : ''%></p>
+        </div>
+    </script>
+
+<script type="text/template" name="tip_item">
+<%for(var i=0; i< result.length; i++){var item=result[i]%>
+<li><a href="javascript:"><%=item%></a></li>
+<%}%>
+</script>
+
+    <script type="text/template" name="say_guess_item">
+        <div class="say-item clearfix robot %>">
+            <img src="/static/images/cstm.png" alt="robot" class="toux img-rounded"/>
+
+            <p class="" data-theme="<%=theme%>">
+                <i>Rotbot:</i> 你是想问下面这些问题吗?</br>
+
+            <%for(var i=0; i< result.length; i++){var item=result[i]%>
+                <a class="question" href="javascript:"><%=item%></a><br/>
+            <%}%>
+
+            </p>
+        </div>
+    </script>
+
+    <script type="text/template" name="alert">
+
+    <div class="alert alert-<%=atype%> alert-dismissible fade in alert_num_<%=num%>" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <div class="content"><%=content%></div>
+    </div>
+
+    </script>
+
+
+</div>
+
+
+</body>
+</html>
