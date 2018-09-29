@@ -25,7 +25,7 @@ SECRET_KEY = 'iy8*lx0p(7hyim-jh@1f7pq0kn*f#gbd8^^!)350(9ry%ew2!-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -73,10 +73,20 @@ WSGI_APPLICATION = 'futuresgod.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'futuregod',
+        'USER': 'futuregod',
+        'PASSWORD': 'future_team@888!',
+        'HOST': '39.104.161.3',
+        'PORT': '3306',
     }
 }
 
