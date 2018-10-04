@@ -31,7 +31,7 @@ def login(request):
         pwd = request.POST.get('pwd', None)
         user = User.objects.filter(username=username).filter(pwd=pwd)
         if len(user) > 0:
-            return HttpResponse("helo , this is post request "+ user[0].desc)
+            return render(request, 'client/loginindex.html', None)
     # 登陆失败或者非post请求则返回首页
     return render(request, 'client/index.html', None)
 
