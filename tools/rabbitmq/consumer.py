@@ -7,12 +7,12 @@
 
 import pika
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-
+username = 'rabbitfg'   #指定远程rabbitmq的用户名密码
+pwd = '123'
+user_pwd = pika.PlainCredentials(username, pwd)
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='39.104.161.3', credentials=user_pwd))
 channel = connection.channel()
-
-channel.exchange_declare(exchange='direct_test',
-                         type='direct')
+channel.exchange_declare(exchange='direct_test')
 
 result = channel.queue_declare(exclusive=True)
 queue_name = result.method.queue

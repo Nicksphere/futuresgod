@@ -6,17 +6,17 @@
 
 import pika
 
-username = 'xxxx'   #指定远程rabbitmq的用户名密码
-pwd = 'xxx'
+username = 'rabbitfg'   #指定远程rabbitmq的用户名密码
+pwd = '123'
 user_pwd = pika.PlainCredentials(username, pwd)
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='39.104.161.3', credentials=user_pwd))
 channel = connection.channel()
 
-channel.exchange_declare(exchange='direct_test',
-                         type='direct')
+channel.exchange_declare(exchange='direct_test')
 
-severity = 'info'  # 设置一个key,
-message = '99999'
+severity = 'login'  # 设置一个key,
+severity = 'error'
+message = 'xyz'
 channel.basic_publish(exchange='direct_test',
                       routing_key=severity,
                       body=message)

@@ -11,5 +11,6 @@ urlpatterns =[
     path('', views.index, name='index'),
     path('orderindex', views.order_index, name='order_index'),
     path('order', views.order, name='order'),
-    path('login', views.login, name='login')
+    path('login', views.login, name='login'),
+    path('loginindex', views.loginindex, name='loginindex')
 ]
