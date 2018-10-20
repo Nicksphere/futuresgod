@@ -3,10 +3,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import User
+from conf.logger_config import get_logger_root
 import json
 from django.template import loader
 # Create your views here.
 
+logger = get_logger_root()
 
 def index(request):
     """
@@ -73,9 +75,12 @@ def order(request):
         # print(product)
         amount = str(datas['amount'])
         price = str(datas['price'])
+        flag = str(datas['flag'])
         params.append(product)
         params.append(amount)
         params.append(price)
+        params.append(flag)
+        logger.info("收到客户端的数据:"+str(params))
         return HttpResponse(content=json.dumps(params), content_type='application/json;charset = utf-8',
                         status='200',
                         reason='success',
